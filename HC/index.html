@@ -1,0 +1,61 @@
+</div>
+        <div class="campo">
+          <label>RETHUS / Resolución</label>
+          <input type="text" name="medico_rethus" placeholder="Número RETHUS">
+        </div>
+        <div class="campo">
+          <label>Firma y sello</label>
+          <input type="text" name="medico_firma" placeholder="Espacio para firma física">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<div class="botones">
+  <button class="btn btn-limpiar" onclick="limpiarFormulario()">Limpiar</button>
+  <button class="btn btn-imprimir" onclick="window.print()">Imprimir</button>
+</div>
+
+<script>
+  try { document.getElementById('fecha_consulta').valueAsDate = new Date(); } catch(e){}
+
+  document.getElementById('fecha_nacimiento').addEventListener('change', function() {
+    var hoy = new Date();
+    var nac = new Date(this.value);
+    var edad = hoy.getFullYear() - nac.getFullYear();
+    var m = hoy.getMonth() - nac.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--;
+    document.getElementById('edad_calculada').value = (edad >= 0 && edad < 150) ? edad : '';
+  });
+
+  function calcularIMC() {
+    var peso  = parseFloat(document.getElementById('peso').value);
+    var talla = parseFloat(document.getElementById('talla').value) / 100;
+    var el = document.getElementById('imc-resultado');
+    if (peso > 0 && talla > 0) {
+      var imc = (peso / (talla * talla)).toFixed(1);
+      var cat = imc < 18.5 ? 'Bajo peso' :
+                imc < 25   ? 'Normal'     :
+                imc < 30   ? 'Sobrepeso'  :
+                imc < 35   ? 'Obesidad I' :
+                imc < 40   ? 'Obesidad II': 'Obesidad III';
+      el.textContent = imc + ' kg/m2 — ' + cat;
+    } else {
+      el.textContent = '—';
+    }
+  }
+  document.getElementById('peso').addEventListener('input', calcularIMC);
+  document.getElementById('talla').addEventListener('input', calcularIMC);
+
+  function limpiarFormulario() {
+    if (confirm('Limpiar todos los campos?')) {
+      document.getElementById('historia-clinica').reset();
+      document.getElementById('imc-resultado').textContent = '—';
+      try { document.getElementById('fecha_consulta').valueAsDate = new Date(); } catch(e){}
+    }
+  }
+</script>
+</body>
+</html>
